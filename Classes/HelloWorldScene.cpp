@@ -126,14 +126,13 @@ bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, Event *unused_event)
 {
 	Point location = touch->getLocation();
 
-	auto layer = this->getChildByName("myLayer");
-	Rect rect = layer->getBoundingBox();
+	if (auto layer = this->getChildByName("myLayer")) {
+		Rect rect = layer->getBoundingBox();
 
-	if (rect.containsPoint(location)) {
-		CCLOG("onTouchBegan");
-	}
-	else {
-		layer->setVisible(false);
+		if (rect.containsPoint(location))
+			CCLOG("onTouchBegan");
+		else
+			layer->setVisible(false);
 	}
 
 	return false;
