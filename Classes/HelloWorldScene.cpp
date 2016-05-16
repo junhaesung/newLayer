@@ -75,6 +75,12 @@ bool HelloWorld::init()
     // add the sprite as a child to this layer
     this->addChild(sprite, 0);
 
+
+	// add listener for onTouchBegan
+	auto listener = EventListenerTouchOneByOne::create();
+	listener->onTouchBegan = CC_CALLBACK_2(HelloWorld::onTouchBegan, this);
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(listener, 1);
+
     
     return true;
 }
@@ -91,23 +97,44 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 
 void HelloWorld::showNewLayer(cocos2d::Ref* pSender)
 {
-	auto newLayer = LayerColor::create(Color4B::WHITE);
+	if (auto layer = this->getChildByName("myLayer"))
+		layer->setVisible(true);
+	else {
 
-	newLayer->setContentSize(Size(360*1.5, 640*1.5));
-	newLayer->setAnchorPoint(Point(0.5, 0.5));
-	newLayer->setPosition(Point(360/4, 640/4));
+		auto newLayer = LayerColor::create(Color4B::WHITE);
 
-	auto s1 = Sprite::create("HelloWorld.png", Rect(0, 0, 100, 100));
-	s1->setPosition(0, 0);
-	s1->setAnchorPoint(Point(0, 0));
-	newLayer->addChild(s1);
+		newLayer->setContentSize(Size(360 * 1.5, 640 * 1.5));
+		newLayer->setAnchorPoint(Point(0.5, 0.5));
+		newLayer->setPosition(Point(360 / 4, 640 / 4));
+		newLayer->setName("myLayer");
 
-	auto s2 = Sprite::create("HelloWorld.png", Rect(0, 0, 100, 100));
-	s1->setPosition(200, 0);
-	s2->setAnchorPoint(Point(0, 0));
-	newLayer->addChild(s2);
+		auto s1 = Sprite::create("HelloWorld.png", Rect(0, 0, 100, 100));
+		s1->setPosition(0, 0);
+		s1->setAnchorPoint(Point(0, 0));
+		newLayer->addChild(s1);
 
-	this->addChild(newLayer);
-	
+		auto s2 = Sprite::create("HelloWorld.png", Rect(0, 0, 100, 100));
+		s1->setPosition(200, 0);
+		s2->setAnchorPoint(Point(0, 0));
+		newLayer->addChild(s2);
 
+		this->addChild(newLayer);
+	}
+}
+
+bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, Event *unused_event)
+{
+	Point location = touch->getLocation();
+
+	auto layer = this->getChildByName("myLayer");
+	Rect rect = layer->getBoundingBox();
+
+	if (rect.containsPoint(location)) {
+		CCLOG("onTouchBegan");
+	}
+	else {
+		layer->setVisible(false);
+	}
+
+	return false;
 }

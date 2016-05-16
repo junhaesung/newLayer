@@ -18,6 +18,10 @@ public:
     
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
+
+	// Override methods
+	// virtual bool onTouchBegan(Touch *touch, Event *unused_event);
+	virtual bool onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *unused_event);
 };
 
 #endif // __HELLOWORLD_SCENE_H__
